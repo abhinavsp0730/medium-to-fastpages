@@ -20,6 +20,7 @@ def get_header(title, description,categories=[],toc='true'):
     return f"""---
 toc: {toc}
 layout: post
+comments: true
 description: {description}
 categories: [Medium]
 title: {title}
