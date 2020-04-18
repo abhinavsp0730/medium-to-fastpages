@@ -1,5 +1,6 @@
 import requests_html
 import os
+import requests
 
 def get_medium_markdown(article_url):
     server = 'https://medium-to-markdown.now.sh/?url='
@@ -60,23 +61,33 @@ def get_articles(profile):
         yield link, get_date_formatted(pub_date), categories
 
 
-def is_image(line):
-    return line.startswith('![') and line.endswith(']') and 'medium.com' in line
+def is_image(line): return line.startswith('![') and line.endswith(')') and 'medium.com' in line
 
 def get_image_url(line):
-    return line.replace(']', '').split('[')[-1]
+    return line.split('](')[-1].replace(')','').strip()
 
 def download_image(path, name, url):
-    #not compelte
     if not os.path.isdir(path): os.mkdir(path)
+    try:
+        img = requests.get(url,allow_redirects=True)
+        with open(f'{path}/{name}.png','wb') as i_file:
+            i_file.write(img.content)
+    except:
+        print('Unable to download key',name,url, 'png')
 
-def download_images(name, markdown):
+
+def download_images(path, name, markdown):
     #not compelete
     new_markdown = []
+    path = path + '/' + name
     count = 1
     for line in markdown.splitlines():
         if is_image(line):
-            download_image(name, str(count), get_image_url(line))
+            print(line)
+            download_image(path, str(count), get_image_url(line))
+            url = '{{ site.baseurl }}/images/' + f'{name}/{count}.png'
+            new_markdown.append(line.split(']')[0] + '](' + url+')')
+            count+=1;
         else:
             new_markdown.append(line)
-    return new_markdown
+    return '\n'.join(new_markdown)

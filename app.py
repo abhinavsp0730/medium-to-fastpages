@@ -15,10 +15,11 @@ def process_article(article):
     try:
         markdown = get_medium_markdown(link)
         markdown = format_medium_markdown(markdown)
-        #markdown = download_images(markdown)
+        markdown = download_images(path, name, markdown)
         save_md(markdown,path,name)
         print('Downloaded', name)
-    except:
+    except Exception as e:
+        print(e)
         print('Could not download', name)
 
 for article in get_articles(username):
