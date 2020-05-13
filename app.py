@@ -5,7 +5,7 @@ medium_link = 'https://medium.com/@ankushchoubey/lessons-learned-from-my-first-d
 
 
 username = 'ankushchoubey'
-path = '/Users/ankushchoubey/Desktop/'+username
+path = './'
 if not os.path.isdir(path): os.mkdir(path)
 
 def process_article(article):
